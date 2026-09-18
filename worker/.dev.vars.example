@@ -1,0 +1,6 @@
+# Local secrets only; never commit .dev.vars. No production bypass exists.
+RESEND_API_KEY=
+TURNSTILE_SECRET_KEY=
+HASH_SECRET=
+# Set FROM_EMAIL, ALLOWED_ORIGINS and TURNSTILE_HOSTNAMES in your private
+# local .dev.vars or production configuration before deployment.

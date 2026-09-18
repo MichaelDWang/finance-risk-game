@@ -1,0 +1,20 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "finance-discovery-email",
+  "main": "index.ts",
+  "compatibility_date": "2026-09-18",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "minify": true,
+  "limits": { "cpu_ms": 30000 },
+  "observability": { "enabled": false },
+  "rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
+  "durable_objects": { "bindings": [{ "name": "MAIL_GUARD", "class_name": "MailGuard" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["MailGuard"] }],
+  "vars": {
+    "FROM_EMAIL": "",
+    "ALLOWED_ORIGINS": "",
+    "TURNSTILE_HOSTNAMES": "",
+    "DAILY_SEND_LIMIT": "200"
+  }
+}

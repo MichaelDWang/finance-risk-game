@@ -1,0 +1,20 @@
+import { describe,it,expect } from 'vitest';
+import { typeIndex,score,diversity } from '../../shared/scoring';
+import { sessionSchema } from '../../shared/schema';
+import { buildReport } from '../../shared/report/model';
+import { fixture,scenarios } from '../fixtures';
+import { matchFigures } from '../../shared/report/figures';
+import { randomAt } from '../../shared/random';
+describe('explicit scoring rules',()=>{
+  it.each([[0,0],[19.999999,0],[20,1],[39.999999,1],[40,2],[59.999999,2],[60,3],[79.999999,3],[80,4],[100,4]])('unrounded boundary %s maps to %s',(n,i)=>expect(typeIndex(n)).toBe(i));
+  it('rejects out of range and non-finite scores',()=>{for(const n of [-1,101,NaN,Infinity])expect(()=>typeIndex(n)).toThrow();});
+  it('computes low, middle and high as 0, 54 1/6 and 100',()=>{expect(score(fixture('low').answers).value).toBe(0);expect(score(fixture('middle').answers).value).toBeCloseTo(54.1666666667);expect(score(fixture('high').answers).value).toBe(100);});
+  it('does not fill missing core answers or classify them as conservative',()=>{const s=fixture('high');s.answers['6']=null;const r=buildReport(s);expect(r.score).toBeNull();expect(r.type).toBeNull();expect(r.missing).toEqual([6]);expect(r.observations[0].value).toBe(100);expect(r.figures).toEqual([]);});
+  it('luck and role never change the main score',()=>{const s=fixture('middle');const original=score(s.answers).value;for(let seed=0;seed<300;seed++){s.seed=seed;s.role=seed%2?'parent':'student';expect(buildReport(s).score).toBe(original);}expect(randomAt(1,100)).not.toBe(randomAt(2,100));});
+  it('uses only the four core indicators',()=>{const s=fixture('middle');const original=score(s.answers).value;for(const id of ['2','4','5','7','8','10','11','12'] as const)s.answers[id]=null;expect(score(s.answers).value).toBe(original);});
+  it('describes normalised spread without awarding main points',()=>{expect(diversity([12,0,0])).toBe(0);expect(diversity([4,4,4])).toBeCloseTo(100);expect(diversity([6,3,3])).toBeCloseTo(93.75);});
+  it('rejects bad totals, amounts, answer IDs, extra fields and incomplete rounds',()=>{for(const answers of [{'3':{chance:101}},{'5':{baskets:[4,4,3]}},{'1':{choices:[true,true]}},{'13':{level:1}},{'6':{level:2,score:100}},{'12':{buffer:61}},{'10':{clues:[1,1],decision:'join'}}])expect(sessionSchema.safeParse({...fixture('middle'),answers}).success).toBe(false);});
+  it('validates balloon events and keeps burst separate from collection',()=>{const s=fixture('middle');s.answers['2']={rounds:[{pumps:0,end:'burst'},{pumps:0,end:'collect'}]};expect(sessionSchema.safeParse(s).success).toBe(false);});
+  it('generates the same model in independent serialisation paths',()=>{for(const m of scenarios){const s=fixture(m);expect(buildReport(s)).toEqual(buildReport(sessionSchema.parse(JSON.parse(JSON.stringify(s)))));}});
+  it('matches concrete observations, with stable ties and honest fallbacks',()=>{const low=matchFigures(fixture('low').answers),high=matchFigures(fixture('high').answers);expect(low.map(x=>x.figure.id)).toEqual(['buffett','markowitz']);expect(high.map(x=>x.figure.id)).toEqual(['kahneman','buffett']);expect(high[1].matched).toBe(false);expect(matchFigures({}).every(x=>!x.matched)).toBe(true);expect(matchFigures(fixture('low').answers)).toEqual(low);});
+});
