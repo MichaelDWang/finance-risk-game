@@ -117,7 +117,7 @@ export async function generatePdf(r:ReportModel,fontBytes:Uint8Array):Promise<Ui
     for(let row=0;row<modules.size;row++)for(let c=0;c<modules.size;c++)if(modules.get(row,c))rect(p3,x+(c+4)*cell,qrTop+(row+4)*cell,cell+.04,cell+.04,navy);
   };
   qr(LINKS.department,M);qr(LINKS.apply,M+col+20);
-  let a=dual(p3,bi('認識金融系','Explore the Department of Finance'),M+qrSize+8,qrTop,col-qrSize-8,9.3,8.5);
+  let a=dual(p3,bi('認識財務金融系','Explore the Department of Finance'),M+qrSize+8,qrTop,col-qrSize-8,9.3,8.5);
   a=link(p3,'fne.chuhai.edu.hk',LINKS.department,M+qrSize+8,a+4,col-qrSize-8,8.3);
   let z=dual(p3,bi('了解課程及報名','Explore programmes and apply'),M+col+20+qrSize+8,qrTop,col-qrSize-8,9.3,8.5);
   z=link(p3,'apply.chuhai.edu.hk',LINKS.apply,M+col+20+qrSize+8,z+4,col-qrSize-8,8.3);

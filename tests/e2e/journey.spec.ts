@@ -1,6 +1,19 @@
 import { test,expect,type Page } from '@playwright/test';
 import { scenarios } from '../fixtures';
 import { mkdir } from 'node:fs/promises';
+for(const [instant,year] of [['2030-12-31T15:59:59Z','2030'],['2030-12-31T16:00:00Z','2031']])test(`uses Hong Kong activity year at ${instant}`,async({page})=>{
+  const timestamp=Date.parse(instant);
+  await page.addInitScript(({timestamp})=>{
+    const NativeDate=Date;
+    class HongKongTestDate extends NativeDate {
+      constructor(...args:any[]){super(args.length===0?timestamp:args[0]);}
+      static now(){return timestamp;}
+    }
+    Object.defineProperty(globalThis,'Date',{value:HongKongTestDate,configurable:true});
+  },{timestamp});
+  await page.goto('./');
+  await expect(page.locator('.start-copy .eyebrow')).toContainText(`INFORMATION DAY / ${year}`);
+});
 async function noOverflow(page:Page){expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);}
 async function slider(page:Page,n:number){const range=page.locator('#game-range');await range.focus();await range.press('Home');for(let i=0;i<n;i++)await range.press('ArrowRight');expect(await range.inputValue()).toBe(String(n));}
 async function next(page:Page){await page.locator('#next').click();await noOverflow(page);}

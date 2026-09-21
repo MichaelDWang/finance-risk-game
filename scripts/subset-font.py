@@ -13,7 +13,7 @@ chars=set(chr(i) for i in range(32,127))
 for folder in ['src','shared','worker']:
     for path in (root/folder).rglob('*.ts'):
         chars.update(path.read_text())
-chars.update('香港時區年月日未完成—−×÷Σ✓◐◆●→↗／｜・')
+chars.update('香港時區年月日財務未完成—−×÷Σ✓◐◆●→↗／｜・')
 font=TTFont(original)
 cmap=font.getBestCmap()
 cps={ord(c) for c in chars if not c.isspace()} | {32}

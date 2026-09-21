@@ -55,7 +55,7 @@ export const UI = {
   evidence:bi('沿途的選擇','Choices along the way'), tips:bi('把發現帶進日常','Take your discoveries further'),
   figures:bi('你的選擇，與哪些金融觀點有共鳴？','Which financial ideas echo your choices?'), editorial:bi('選擇對照（本專案的解釋）','Choice connection (our editorial interpretation)'), compare:bi('值得比較的觀點','Ideas to compare'), source:bi('資料來源','Source'), learn:bi('可學的思路','An idea to learn from'), limitation:bi('留意局限','Keep the limits in mind'),
   exploreTitle:bi('把好奇心變成金融知識','Turn curiosity into financial understanding.'), exploreText:bi('遊戲涉及理解風險、比較選擇、運用資料及規劃資源。金融學習讓你進一步探索這些問題。','These games involve understanding risk, comparing choices, using information and planning resources. Studying finance lets you explore these questions further.'),
-  department:bi('認識金融系','Explore the Department of Finance'), apply:bi('了解課程及報名','Explore programmes and apply'), finance:bi('金融學課程','Finance programme'), information:bi('金融及資訊管理課程','Finance and Information Management programme'),
+  department:bi('認識財務金融系','Explore the Department of Finance'), apply:bi('了解課程及報名','Explore programmes and apply'), finance:bi('金融學課程','Finance programme'), information:bi('金融及資訊管理課程','Finance and Information Management programme'),
   download:bi('下載雙語PDF','Download bilingual PDF'), email:bi('以電郵接收報告','Email my report'), emailLabel:bi('電郵地址','Email address'),
   consent:bi('我主動申請寄送此報告，並同意為寄送處理我的電郵地址及本次測試資料。不會加入招生郵件名單。','I request this report and agree to the processing of my email address and activity data for delivery. I will not be added to an admissions mailing list.'),
   send:bi('申請寄送PDF','Request my PDF by email'), unavailable:bi('電郵服務暫未啟用，請先下載PDF。','Email delivery is not available yet. Please download your PDF.'),

@@ -1,8 +1,9 @@
 export type Bi = { zh: string; en: string };
 export const bi = (zh: string, en: string): Bi => ({ zh, en });
 export const VERSION = '1.0.0';
-export const BRAND = bi('香港珠海學院｜商學院｜金融系', 'Department of Finance · Faculty of Business · Hong Kong Chu Hai College');
+export const BRAND = bi('香港珠海學院｜商學院｜財務金融系', 'Department of Finance · Faculty of Business · Hong Kong Chu Hai College');
 export const TITLE = bi('金融探索實驗室', 'Finance Discovery Lab');
+export const currentYearHK = (date = new Date()) => new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Hong_Kong',year:'numeric'}).format(date);
 export const DISCLAIMER = bi('本活動用於金融教育與自我探索，結果只反映你在本次遊戲中的選擇，不是投資建議或正式風險評級。', 'This activity is for financial education and self-exploration. The results reflect your choices in these games and are not investment advice or a formal risk assessment.');
 export const FIGURE_NOTE = bi('此處只比較公開投資理念，不代表個人評級相同或任何人士認可本活動。', 'These comparisons concern public investment ideas only. They do not imply identical personal ratings or endorsement of this activity.');
 export const LINKS = {

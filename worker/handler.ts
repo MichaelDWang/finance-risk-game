@@ -58,7 +58,7 @@ export function makeHandler(generate:PdfFn,fetcher:Fetcher=fetch){
     try{
       const pdf=await generate(report);if(pdf.length>5*1024*1024)throw new Error('PDF too large');
       const mail={from:env.FROM_EMAIL,to:[email],subject:'你的金融探索報告 / Your Finance Discovery Report',
-        text:`${BRAND.zh}\n${BRAND.en}\n\n多謝參與金融探索實驗室。你的雙語報告已附上。\nThank you for exploring Finance Discovery Lab. Your bilingual report is attached.\n\n報告編號 / Report ID: ${report.reportId}\n認識金融系 / Explore the Department of Finance: ${LINKS.department}\n\n此電郵只用於你主動申請的報告寄送。你沒有加入招生郵件名單。\nThis email fulfils your report request only. You have not joined an admissions mailing list.`,
+        text:`${BRAND.zh}\n${BRAND.en}\n\n多謝參與金融探索實驗室。你的雙語報告已附上。\nThank you for exploring Finance Discovery Lab. Your bilingual report is attached.\n\n報告編號 / Report ID: ${report.reportId}\n認識財務金融系 / Explore the Department of Finance: ${LINKS.department}\n\n此電郵只用於你主動申請的報告寄送。你沒有加入招生郵件名單。\nThis email fulfils your report request only. You have not joined an admissions mailing list.`,
         attachments:[{filename:`Finance-Discovery-${report.reportId}.pdf`,content:base64(pdf),content_type:'application/pdf'}]};
       const response=await fetcher('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+env.RESEND_API_KEY,'Content-Type':'application/json','Idempotency-Key':key},body:JSON.stringify(mail),signal:AbortSignal.timeout(20000)});
       if(!response.ok)throw new Error('Provider rejected');const data=await response.json() as {id?:unknown};if(typeof data.id!=='string'||!data.id)throw new Error('Provider result incomplete');accepted=true;

@@ -5,6 +5,7 @@ import { buildReport } from '../../shared/report/model';
 import { fixture,scenarios } from '../fixtures';
 import { matchFigures } from '../../shared/report/figures';
 import { randomAt } from '../../shared/random';
+import { currentYearHK } from '../../shared/content';
 describe('explicit scoring rules',()=>{
   it.each([[0,0],[19.999999,0],[20,1],[39.999999,1],[40,2],[59.999999,2],[60,3],[79.999999,3],[80,4],[100,4]])('unrounded boundary %s maps to %s',(n,i)=>expect(typeIndex(n)).toBe(i));
   it('rejects out of range and non-finite scores',()=>{for(const n of [-1,101,NaN,Infinity])expect(()=>typeIndex(n)).toThrow();});
@@ -16,5 +17,13 @@ describe('explicit scoring rules',()=>{
   it('rejects bad totals, amounts, answer IDs, extra fields and incomplete rounds',()=>{for(const answers of [{'3':{chance:101}},{'5':{baskets:[4,4,3]}},{'1':{choices:[true,true]}},{'13':{level:1}},{'6':{level:2,score:100}},{'12':{buffer:61}},{'10':{clues:[1,1],decision:'join'}}])expect(sessionSchema.safeParse({...fixture('middle'),answers}).success).toBe(false);});
   it('validates balloon events and keeps burst separate from collection',()=>{const s=fixture('middle');s.answers['2']={rounds:[{pumps:0,end:'burst'},{pumps:0,end:'collect'}]};expect(sessionSchema.safeParse(s).success).toBe(false);});
   it('generates the same model in independent serialisation paths',()=>{for(const m of scenarios){const s=fixture(m);expect(buildReport(s)).toEqual(buildReport(sessionSchema.parse(JSON.parse(JSON.stringify(s)))));}});
+  it('uses Hong Kong time for activity years and stored report dates across New Year',()=>{
+    expect(currentYearHK(new Date('2030-12-31T15:59:59Z'))).toBe('2030');
+    expect(currentYearHK(new Date('2030-12-31T16:00:00Z'))).toBe('2031');
+    const before=buildReport({...fixture('middle'),createdAt:'2030-12-31T15:59:59Z'});
+    const after=buildReport({...fixture('middle'),createdAt:'2030-12-31T16:00:00Z'});
+    expect(before.dateHK).toBe('31/12/2030');
+    expect(after.dateHK).toBe('01/01/2031');
+  });
   it('matches concrete observations, with stable ties and honest fallbacks',()=>{const low=matchFigures(fixture('low').answers),high=matchFigures(fixture('high').answers);expect(low.map(x=>x.figure.id)).toEqual(['buffett','markowitz']);expect(high.map(x=>x.figure.id)).toEqual(['kahneman','buffett']);expect(high[1].matched).toBe(false);expect(matchFigures({}).every(x=>!x.matched)).toBe(true);expect(matchFigures(fixture('low').answers)).toEqual(low);});
 });
